@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import injectTapEventPlugin from 'react-tap-event-plugin'
-import FlatButton from 'material-ui/FlatButton';
+import NavDrawer from '../components/NavDrawer';
+import {Header, Main} from '../styled/Template'
+import Relay from 'react-relay'
 
 injectTapEventPlugin()
 
@@ -11,21 +13,32 @@ class Template extends Component {
         return (
             <MuiThemeProvider>
                 <div>
-                    <header>
-                        <h1>TicTacTuring</h1>
-                        <FlatButton
-                            label={'Test button'}
-                            primary={true}
-                            onTouchTap={()=>{console.log('hello I work')}}
-                        />
-                    </header>
-                    <main>
+                    <NavDrawer
+                        auth={this.props.route.auth}
+                        authenticated={this.props.viewer.user}  //  pass along true if this.props.viewer.user is true so if not, null. And pass along null, if this.props.viewer is null. (false)
+                    />
+                    <Header>
+                        Tic Tac Yuaning
+                    </Header>
+                    <Main>
                         {this.props.children}
-                    </main>
+                    </Main>
                 </div>
             </MuiThemeProvider>
         )
     }
 }
 
-export default Template
+export default Relay.createContainer(
+    Template, {
+        fragments: {
+            viewer: () => Relay.QL`
+                fragment on Viewer {
+                    user {
+                        id
+                    }
+                }
+            `,
+        }
+    }
+)
