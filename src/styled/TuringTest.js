@@ -22,7 +22,7 @@ const Container = styled.div`
 `
 
 const Question = styled.span`
-  font-size: 25px;
+  font-size: 20px;
   display: flex;
 `
 

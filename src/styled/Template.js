@@ -5,7 +5,9 @@ import {media} from '../utils/media'
 export const Header = styled.header`
     text-align: center;
     font-size: 2em;
-    font-family: 'Roboto', sans-serif
+    font-family: 'Roboto', sans-serif;
+    color: #00bcd4;
+    margin-bottom: 2rem;
 `
 
 export const Container = styled.div`

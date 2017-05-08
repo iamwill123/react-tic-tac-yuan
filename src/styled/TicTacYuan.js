@@ -3,8 +3,8 @@ import {Layer, Line, Text} from 'react-konva'
 
 export const Board = ({unit, size, rows}) => {
     let grid = []
-    let stroke = 'blue'
-    let strokeWidth = 10
+    let stroke = '#2583ff'
+    let strokeWidth = 5
 
     for (let i = 1; i < rows; i++) {
         let position = unit * i
@@ -46,9 +46,9 @@ export const Squares = ({
     let squares = coordinates.map( (position, index) => {
         let makeMove = move
         let mark = gameState[index]
-        let fill = 'black'
+        let fill = 'crimson'
         if (win && win.includes(index)) {
-            fill = 'lightblue'
+            fill = 'blue'
         }
         if (gameOver || !yourTurn || mark) {
             makeMove = () => console.log('nope, not your turn!')
@@ -63,7 +63,7 @@ export const Squares = ({
                 width={unit}
                 text={mark}
                 fill={fill}
-                fontFamily={'Helvetica'}
+                fontFamily={'Roboto'}
                 align={'center'}
                 onClick={(event)=>{
                     let index =  event.target.index
