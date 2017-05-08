@@ -3,31 +3,10 @@ import {Container, Name, GameListHeader, GameList, GameRecord, ColumnLabels, Col
 import Relay from 'react-relay'
 
 class Profile extends Component {
-    static defaultProps ={          // dummy values to check that it works.
-        user: {
-            email: 'USER_EMAIL',
-            games: [
-                {
-                    winner: true,
-                    createdAt: '12/26/2016',
-                    id: '0001'
-                },
-                {
-                    winner: false,
-                    createdAt: '12/27/2016',
-                    id: '0002'
-                },
-                {
-                    winner: true,
-                    createdAt: '12/28/2016',
-                    id: '0003'
-                }
-            ]
-        }
-    }
 
     get records() {
-        return this.props.user.games.map( (game, index) => {
+        return this.props.viewer.user.p1games.edges.map( (edge, index) => {
+            let {node: game} = edge
             return (
                 <GameRecord       //whenever we have an array of components, they must have a key
                     key={index}
@@ -36,17 +15,14 @@ class Profile extends Component {
                     <Column>
                         {(game.winner) ? 'Won' : 'Lost'}
                     </Column>
-
                     <Column>
-                        'Robot'
+                        {game.p1Guess}
                     </Column>
-
                     <Column>
-                        'Nope'
+                        {(game.p1GuessCorrect) ? 'Yes!' : 'Nope!'}
                     </Column>
-
                     <Column>
-                        {game.createdAt}
+                        {new Date(game.createdAt).toLocaleDateString()}
                     </Column>
 
                 </GameRecord>
@@ -55,7 +31,7 @@ class Profile extends Component {
     }
 
     render() {
-        let {email} = this.props.user
+        let {email} = this.props.viewer.user
         return (
             <Container>
                 <Name>
@@ -93,6 +69,20 @@ export default Relay.createContainer(
                 fragment on Viewer {
                     user {
                         id
+                        email
+                        p1games (first: 10) {
+                            edges {
+                                node {
+                                    id
+                                    createdAt
+                                    winner {
+                                        id
+                                    }
+                                    p1Guess
+                                    p1GuessCorrect
+                                }
+                            }
+                        }
                     }
                 }
             `,

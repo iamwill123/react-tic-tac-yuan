@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import {Stage} from 'react-konva'
 import {Board, Squares} from '../styled/TicTacYuan'
 import Relay from 'react-relay'
+import TuringTest from '../styled/TuringTest'
+import CreateGame from '../mutations/CreateGame'
 
 class TicTacYuan extends Component {
 
@@ -93,7 +95,7 @@ class TicTacYuan extends Component {
         let aiMove = openSquares[this.random(0, openSquares.length)]
         setTimeout(() => {
             this.move(aiMove,otherMark)
-        }, 1000*this.random(0, openSquares.length))
+        }, 1000)
     }
 
     // a utility function, to generate a random number
@@ -111,12 +113,39 @@ class TicTacYuan extends Component {
             return (gameState[a] === gameState[b] && gameState[a] === gameState[c] && gameState[a])
         })
     }
-    turningTest = () => {
-        //placeholders for actions
+    turingTest = () => {
+        if (this.state.gameOver) {
+            return (
+                <TuringTest
+                    recordGame={this.recordGame}
+                />
+            )
+        }
     }
 
-    recordGame = () => {
-        //placeholders for actions
+    recordGame = (guess) => {
+        let { user } = this.props.viewer
+        let { relay } = this.props
+        let { winner, ownMark } = this.state
+        if (user) {
+            let winnerId = (winner ===  ownMark) ? user.id : undefined
+            let guessCorrect = (guess === 'ROBOT') ? true : false
+            relay.commitUpdate(
+                new CreateGame({
+                    user,
+                    winnerId,
+                    guess,
+                    guessCorrect
+                })
+            )
+        }
+        this.setState({
+            gameState: new Array(9).fill(false),
+            gameOver: false,
+            yourTurn: true,
+            winner: false,
+            win: false
+        })
     }
 
     render() {
@@ -154,6 +183,7 @@ class TicTacYuan extends Component {
                         move={this.move}
                     />
                 </Stage>
+                {this.turingTest()}
             </div>
         )
     }
